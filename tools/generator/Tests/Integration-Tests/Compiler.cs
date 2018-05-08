@@ -33,7 +33,7 @@ namespace generatortests
 
 		public static Assembly Compile (Xamarin.Android.Binder.CodeGeneratorOptions options,
 			string assemblyFileName, IEnumerable<string> AdditionalSourceDirectories,
-			out bool hasErrors, out string output, bool allowWarnings)
+			out bool hasErrors, out string output, bool allowWarnings, bool debug=false)
 		{
 			var generatedCodePath = options.ManagedCallableWrapperSourceOutputDirectory;
 			var sourceFiles = Directory.EnumerateFiles (generatedCodePath, "*.cs",
@@ -76,6 +76,12 @@ namespace generatortests
 					hasErrors |= !message.IsWarning || !allowWarnings;
 				}
 				output = string.Join (Environment.NewLine, results.Output.Cast<string> ());
+
+				if (debug) {
+					foreach (var error in results.Errors)
+						Console.WriteLine ($"** Compiler.Compile error: {error.ToString()}");
+					Console.WriteLine ($"** Compiler.Compile hasErrors: {hasErrors}, output: {output}");
+				}
 
 				return results.CompiledAssembly;
 			}

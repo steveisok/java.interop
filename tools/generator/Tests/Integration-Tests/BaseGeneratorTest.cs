@@ -42,7 +42,9 @@ namespace generatortests
 			bool    hasErrors;
 			string  compilerOutput;
 			BuiltAssembly = Compiler.Compile (Options, FullPath ("Mono.Android.dll"), AdditionalSourceDirectories,
-				out hasErrors, out compilerOutput, AllowWarnings);
+				out hasErrors, out compilerOutput, AllowWarnings, true);
+			if (compilerOutput == null)
+				Console.WriteLine ($"** BaseGeneratorTest.Execute: compilerOutput is null");
 			Assert.AreEqual (false, hasErrors, compilerOutput);
 			Assert.IsNotNull (BuiltAssembly);
 		}
