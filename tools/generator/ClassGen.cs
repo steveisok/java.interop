@@ -333,7 +333,7 @@ namespace MonoDroid.Generation {
 				gen.GenerateAbstractMembers (this, sw, indent, opt);
 		}
 
-		void GenMethods (StreamWriter sw, string indent, CodeGenerationOptions opt)
+		void GenerateDefaultInterfaceMethodsImplementationClassic (StreamWriter sw, string indent, CodeGenerationOptions opt)
 		{
 			// This does not exclude overrides (unlike virtual methods) because we're not sure
 			// if calling the base interface default method via JNI expectedly dispatches to
@@ -357,6 +357,12 @@ namespace MonoDroid.Generation {
 				opt.ContextGeneratedMethods.Add (m);
 				m.IsVirtual = virt;
 			}
+		}
+
+		void GenMethods (StreamWriter sw, string indent, CodeGenerationOptions opt)
+		{
+			if (!opt.SupportDefaultInterfaceMethods)
+				GenerateDefaultInterfaceMethodsImplementationClassic (sw, indent, opt);
 
 			var methods = Methods.Concat (Properties.Where (p => p.Setter != null).Select (p => p.Setter));
 			foreach (InterfaceGen type in methods.Where (m => m.IsListenerConnector && m.EventName != String.Empty).Select (m => m.ListenerType).Distinct ()) {
